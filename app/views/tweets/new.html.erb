@@ -1,0 +1,5 @@
+<div class = "d-flex flex-column">
+    <h1>Tweeter</h1>
+    <%= render partial: "form" , locals: {tweet: @tweet} %>
+    <%= render partial: "tweets" , locals: {tweets: @tweets} %>
+</div>

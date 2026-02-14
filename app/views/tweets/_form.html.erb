@@ -1,0 +1,10 @@
+<%= form_with model: tweet , method: :post do |form| %>
+    <%= render partial: "shared/error_messages" , locals: {form: form} %>
+    <div class = "mb-3">
+        <%= form.label :body , class: "form-label"%>
+        <%= form.text_area :body ,placeholder: "what's on your mind?",class: "form-control"%>
+    </div>
+    <div class = "mb-3">
+        <%= form.submit class: "btn btn-primary" %>
+    </div>
+<%end%>
