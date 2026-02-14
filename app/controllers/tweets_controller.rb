@@ -1,5 +1,5 @@
 class TweetsController < ApplicationController
-  def new
+  def index
     @tweet = Tweet.new
     @tweets = Tweet.all.order(created_at: :desc)
   end
@@ -7,10 +7,10 @@ class TweetsController < ApplicationController
   def create
     @tweet = Tweet.new(tweet_params)
     if @tweet.save
-      redirect_to new_tweet_path, notice: "Tweet was created successfully"
+      redirect_to tweets_path, notice: "Tweet was created successfully"
     else
       @tweets = Tweet.all.order(created_at: :desc)
-      render :new, status: :unprocessable_entity
+      render :index, status: :unprocessable_entity
     end
   end
 

@@ -1,0 +1,8 @@
+<div class = "d-flex flex-column">
+    <h1>Tweeter</h1>
+    <%= render partial: "form" , locals: {tweet: @tweet} %>
+    <%= turbo_stream_from "tweets" %>
+    <%= turbo_frame_tag "tweets" do %>
+            <%= render @tweets %>
+    <%end%>
+</div>
