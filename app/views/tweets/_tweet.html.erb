@@ -1,16 +1,31 @@
 <%= turbo_frame_tag dom_id(tweet) do %>
-  <div class="card card-body p-3 mb-2">
-    <%= tweet.body %>
-    <div class="d-flex align-items-center gap-2">
-      <%= button_to "Likes (#{tweet.likes})", tweet_likes_path(tweet), class: "btn btn-outline-primary" %>
-       <%= button_to "Retweets (#{tweet.retweets})" , tweet_retweets_path(tweet)  , class: "btn btn-outline-primary"%>
-      
-      <%= button_to "Delete", tweet, method: :delete, 
-          class: "btn btn-sm btn-outline-danger",
-          data: { turbo_confirm: "Are you sure?" } %>
+  <div class="card mb-2 shadow-sm border-light">
+    <div class="card-body p-3">
+      <div class="mb-2">
+        <span class="fw-bold"><%= tweet.user.email %></span>
+        <small class="text-muted">· <%= time_ago_in_words(tweet.created_at) %> ago</small>
+      </div>
 
-      <%= link_to "Edit", edit_tweet_path(tweet), 
-          class: "btn btn-sm btn-outline-secondary" %>
+      <p class="card-text mb-3"><%= tweet.body %></p>
+      
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex gap-2">
+          <%= button_to "Likes (#{tweet.likes})", tweet_likes_path(tweet), class: "btn btn-sm btn-outline-primary rounded-pill" %>
+          <%= button_to "Retweets (#{tweet.retweets})", tweet_retweets_path(tweet), class: "btn btn-sm btn-outline-primary rounded-pill" %>
+        </div>
+
+        <%# SAFE CHECK: Use local_assigns only %>
+        <% auth_user = local_assigns[:current_user] || (defined?(current_user) ? current_user : nil) rescue nil %>
+
+        <% if auth_user && tweet.user_id == auth_user.id %>
+          <div class="d-flex gap-2">
+            <%= link_to "Edit", edit_tweet_path(tweet), class: "btn btn-sm btn-outline-secondary" %>
+            <%= button_to "Delete", tweet, method: :delete, 
+                class: "btn btn-sm btn-outline-danger", 
+                data: { turbo_confirm: "Are you sure?" } %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 <% end %>

@@ -1,17 +1,28 @@
 class TweetsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_tweet, only: [ :destroy, :update, :show, :edit ]
+  before_action :correct_user, only: [ :destroy, :update, :edit ]
   def index
     @tweet = Tweet.new
-    @tweets = Tweet.all.order(created_at: :desc)
+    @tweets = Tweet.includes(:user).all.order(created_at: :desc)
   end
 
   def create
-    @tweet = Tweet.new(tweet_params)
+    @tweet = current_user.tweets.build(tweet_params)
 
     # 1. The Switchboard: Checks if the browser wants HTML or a Turbo Stream
     respond_to do |format|
       if @tweet.save
-        format.html { redirect_to tweets_path, notice: "Tweet was created successfully" }
+
+        format.turbo_stream {
+        render turbo_stream: [
+          turbo_stream.prepend("tweets",
+          partial: "tweets/tweet",
+          locals: { tweet: @tweet, current_user: current_user }),
+          turbo_stream.replace("tweet_form", partial: "tweets/form", locals: { tweet: Tweet.new })
+        ]
+      }
+      format.html { redirect_to tweets_path, notice: "Tweet created!" }
       else
         @tweets = Tweet.all.order(created_at: :desc)
 
@@ -60,5 +71,9 @@ class TweetsController < ApplicationController
 
   def set_tweet
         @tweet = Tweet.find(params[:id])
+  end
+  def correct_user
+    @tweet = current_user.tweets.find_by(id: params[:id])
+    redirect_to tweets_path, alert: "Not yours!" if @tweet.nil?
   end
 end
