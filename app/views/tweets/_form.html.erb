@@ -2,9 +2,9 @@
     <%= render partial: "shared/error_messages" , locals: {form: form} %>
     <div class = "mb-3">
         <%= form.label :body , class: "form-label"%>
-        <%= form.text_area :body ,placeholder: "what's on your mind?",class: "form-control"%>
+        <%= form.text_area :body ,placeholder: "what's on your mind?" , disabled: !user_signed_in? ,class: "form-control"%>
     </div>
     <div class = "mb-3">
-        <%= form.submit class: "btn btn-primary" %>
+        <%= form.submit class: "btn btn-primary" , disabled: !user_signed_in? %>
     </div>
 <%end%>

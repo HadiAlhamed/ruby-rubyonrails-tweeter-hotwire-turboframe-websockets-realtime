@@ -10,8 +10,8 @@
       
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex gap-2">
-          <%= button_to "Likes (#{tweet.likes})", tweet_likes_path(tweet), class: "btn btn-sm btn-outline-primary rounded-pill" %>
-          <%= button_to "Retweets (#{tweet.retweets})", tweet_retweets_path(tweet), class: "btn btn-sm btn-outline-primary rounded-pill" %>
+          <%= button_to "Likes (#{tweet.likes})", tweet_likes_path(tweet), disabled: !user_signed_in?, class: "btn btn-sm btn-outline-primary rounded-pill" %>
+          <%= button_to "Retweets (#{tweet.retweets})", tweet_retweets_path(tweet), disabled: !user_signed_in?, class: "btn btn-sm btn-outline-primary rounded-pill" %>
         </div>
 
         <%# SAFE CHECK: Use local_assigns only %>

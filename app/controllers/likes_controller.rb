@@ -1,6 +1,6 @@
 class LikesController < ApplicationController
   before_action :set_tweet
-
+  before_action :authenticate_user!
   def create
     @tweet.increment! :likes
     redirect_to @tweet

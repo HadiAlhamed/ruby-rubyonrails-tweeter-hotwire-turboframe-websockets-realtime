@@ -1,5 +1,7 @@
 class RetweetsController < ApplicationController
   before_action :set_tweet
+  before_action :authenticate_user!
+
   def create
     @tweet.increment! :retweets
     redirect_to @tweet
