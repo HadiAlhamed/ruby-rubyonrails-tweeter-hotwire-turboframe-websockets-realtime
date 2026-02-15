@@ -1,15 +1,16 @@
-<div id="<%= dom_id tweet %>" class="card card-body p-3 mb-2">
+<%= turbo_frame_tag dom_id(tweet) do %>
+  <div class="card card-body p-3 mb-2">
     <%= tweet.body %>
     <div class="d-flex align-items-center gap-2">
-        <span>
-            Likes <%= tweet.likes %>
-        </span>
-        <span>
-            Retweets <%= tweet.retweets %>
-        </span>
-        
-        <%= button_to "Delete", tweet, method: :delete, 
-            class: "btn btn-sm btn-outline-danger",
-            data: { turbo_confirm: "Are you sure?" } %>
+      <%= button_to "Likes (#{tweet.likes})", tweet_likes_path(tweet), class: "btn btn-outline-primary" %>
+       <%= button_to "Retweets (#{tweet.retweets})" , tweet_retweets_path(tweet)  , class: "btn btn-outline-primary"%>
+      
+      <%= button_to "Delete", tweet, method: :delete, 
+          class: "btn btn-sm btn-outline-danger",
+          data: { turbo_confirm: "Are you sure?" } %>
+
+      <%= link_to "Edit", edit_tweet_path(tweet), 
+          class: "btn btn-sm btn-outline-secondary" %>
     </div>
-</div>
+  </div>
+<% end %>
