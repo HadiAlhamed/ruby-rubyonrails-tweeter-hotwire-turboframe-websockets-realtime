@@ -55,11 +55,22 @@ class TweetsController < ApplicationController
   end
 
   def update
-    if @tweet.update(tweet_params)
-      # This redirect is caught by the Turbo Frame!
-      redirect_to @tweet, notice: "Tweet updated"
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @tweet.update(tweet_params)
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(ActionView::RecordIdentifier.dom_id(@tweet),
+            partial: "tweets/tweet",
+            locals: { tweet: @tweet, current_user: current_user })
+        }
+        format.html { redirect_to tweets_path, notice: "Tweet updated!" }
+      else
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(ActionView::RecordIdentifier.dom_id(@tweet),
+            partial: "tweets/form",
+            locals: { tweet: @tweet })
+        }
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -70,7 +81,7 @@ class TweetsController < ApplicationController
   end
 
   def set_tweet
-        @tweet = Tweet.find(params[:id])
+        @tweet = current_user.tweets.find(params[:id])
   end
   def correct_user
     @tweet = current_user.tweets.find_by(id: params[:id])
