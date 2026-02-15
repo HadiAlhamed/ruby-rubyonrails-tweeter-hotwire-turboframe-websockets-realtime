@@ -67,3 +67,5 @@ end
 
 gem "hotwire-rails", "~> 0.1.3"
 gem "redis"
+gem "devise"
+gem "responders" # Devise needs this for the custom 'Responder' logic
