@@ -1,10 +1,27 @@
-<div class = "d-flex flex-column">
-    <h1>Tweeter</h1>
-    <%= turbo_frame_tag "tweet_form" do %>
-        <%= render partial: "form" , locals: {tweet: @tweet} %>
-    <%end%>
-    <%= turbo_stream_from "tweets" %> <!-- telling javascript to stream from the tweets stream  -->
-    <%= turbo_frame_tag "tweets" do %>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      
+      <div class="d-flex flex-column">
+        <h1 class="fw-black display-6 mb-4">Home</h1>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <%= turbo_frame_tag "tweet_form" do %>
+              <%= render partial: "form", locals: {tweet: @tweet} %>
+            <% end %>
+          </div>
+        </div>
+
+        <%= turbo_stream_from "tweets" %>
+
+        <div class="tweets-feed">
+          <%= turbo_frame_tag "tweets" do %>
             <%= render @tweets %>
-    <%end%>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
