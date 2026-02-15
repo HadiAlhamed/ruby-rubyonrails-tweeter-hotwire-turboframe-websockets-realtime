@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   # If NOT logged in, go to Sign Up
   devise_scope :user do
     unauthenticated do
-      root to: "devise/registrations#new", as: :unauthenticated_root
+      root to: "devise/sessions#new", as: :unauthenticated_root
     end
   end
 
