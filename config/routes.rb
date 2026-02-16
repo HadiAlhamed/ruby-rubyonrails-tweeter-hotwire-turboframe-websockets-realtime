@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   resources :tweets do
     resources :likes
     resources :retweets
+    resources :comments, module: :tweets
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

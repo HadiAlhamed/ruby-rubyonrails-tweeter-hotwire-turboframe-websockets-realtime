@@ -1,0 +1,7 @@
+<% # this will generate an action= /tweets/:id/comments %>
+<%= form_with model: [commentable , comment] do |form|%> 
+    <%= render partial: "shared/error_messages" , locals: {form: form} %>
+    <%= form.label :body , class: "form-label" %>
+    <%= form.rich_text_area :body %>
+    <%= form.submit class: "btn btn-primary" %>
+<%end%>

@@ -1,3 +1,9 @@
 <%= turbo_frame_tag dom_id(@tweet) do %>
     <%= render "tweet", tweet: @tweet%>
 <%end%>
+<h4>Comments</h4>
+<% if current_user %>
+    <%= render partial: "comments/form", locals: {comment: Comment.new, commentable: @tweet} %>
+<% else %>
+    <%= link_to "Signp", new_user_registration_path, class: "btn btn-outline-primary" %> or <%= link_to "Login", new_user_session_path ,class: "btn btn-outline-primary" %> to comment
+<% end %>
