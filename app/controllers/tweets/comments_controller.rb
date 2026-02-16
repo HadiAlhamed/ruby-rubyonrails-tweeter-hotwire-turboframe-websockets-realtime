@@ -4,6 +4,6 @@ class Tweets::CommentsController < ApplicationController
 
   private
   def set_commentable
-    @commentable = Tweet.find(params[:id])
+    @commentable = Tweet.find(params[:tweet_id])
   end
 end
