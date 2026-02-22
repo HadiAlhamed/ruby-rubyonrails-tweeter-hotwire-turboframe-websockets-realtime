@@ -1,0 +1,4 @@
+<%= turbo_stream.replace dom_id(@tweet) do %>
+  <%= render partial: "tweets/tweet",
+             locals: { tweet: @tweet, current_user_id: current_user&.id } %>
+<% end %>

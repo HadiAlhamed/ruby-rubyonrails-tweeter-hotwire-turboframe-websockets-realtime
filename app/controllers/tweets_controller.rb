@@ -2,6 +2,7 @@ class TweetsController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
   before_action :set_tweet, only: [ :destroy, :update, :edit ]
   before_action :correct_user, only: [ :destroy, :update, :edit ]
+  before_action :set_current_user_id # only: [ :edit, :show, :index, :create, :update ]
   def index
     @tweet = Tweet.new
     @tweets = Tweet.includes(:user).all.order(created_at: :desc)
@@ -10,70 +11,51 @@ class TweetsController < ApplicationController
   def create
     @tweet = current_user.tweets.build(tweet_params)
 
-    # 1. The Switchboard: Checks if the browser wants HTML or a Turbo Stream
-    respond_to do |format|
-      if @tweet.save
-
-        format.turbo_stream {
-        render turbo_stream: [
-          turbo_stream.prepend("tweets",
-          partial: "tweets/tweet",
-          locals: { tweet: @tweet, current_user: current_user }),
-          turbo_stream.replace("tweet_form", partial: "tweets/form", locals: { tweet: Tweet.new })
-        ]
-      }
-      format.html { redirect_to tweets_path, notice: "Tweet created!" }
-      else
-        @tweets = Tweet.all.order(created_at: :desc)
-
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.replace("tweet_form",
-                partial: "tweets/form",
-                locals: { tweet: @tweet })
-        }
+    if @tweet.save
+      respond_to do |format|
+        format.turbo_stream # Rails will automatically use create.turbo_stream.erb
+        format.html { redirect_to tweets_path, notice: "Tweet created!" }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream { render :index }
         format.html { render :index, status: :unprocessable_entity }
       end
     end
   end
 
-  def destroy
-    @tweet.destroy
-    respond_to do |format|
-        # This is for browsers with JS disabled or if you want a full reload
-        format.html { redirect_to tweets_path, notice: "Tweet deleted" }
 
-        # This tells the browser: "The model already sent the removal instruction,
-        # so just finish the request silently without a full page reload."
-        format.turbo_stream
+  def update
+    respond_to do |format|
+      if @tweet.update(tweet_params)
+        format.html { redirect_to tweets_path, notice: "Tweet updated!" }
+        format.turbo_stream # Rails will use update.turbo_stream.erb
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render :edit }
+      end
     end
   end
 
 
+  def destroy
+    @tweet.destroy
+
+    respond_to do |format|
+      format.turbo_stream # Rails will use destroy.turbo_stream.erb
+      format.html { redirect_to tweets_path, notice: "Tweet deleted" }
+    end
+  end
+
+
+
   def edit
+    @tweet = Tweet.find(params[:id])
   end
   def show
     @tweet = Tweet.find(params[:id])
   end
 
-  def update
-    respond_to do |format|
-      if @tweet.update(tweet_params)
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.replace(ActionView::RecordIdentifier.dom_id(@tweet),
-            partial: "tweets/tweet",
-            locals: { tweet: @tweet, current_user: current_user })
-        }
-        format.html { redirect_to tweets_path, notice: "Tweet updated!" }
-      else
-        format.turbo_stream {
-          render turbo_stream: turbo_stream.replace(ActionView::RecordIdentifier.dom_id(@tweet),
-            partial: "tweets/form",
-            locals: { tweet: @tweet })
-        }
-        format.html { render :edit, status: :unprocessable_entity }
-      end
-    end
-  end
 
 
   private
@@ -87,5 +69,9 @@ class TweetsController < ApplicationController
   def correct_user
     @tweet = current_user.tweets.find_by(id: params[:id])
     redirect_to tweets_path, alert: "Not yours!" if @tweet.nil?
+  end
+
+  def set_current_user_id
+    @current_user_id = current_user&.id
   end
 end

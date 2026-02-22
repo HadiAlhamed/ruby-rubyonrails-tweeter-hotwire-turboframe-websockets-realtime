@@ -11,14 +11,12 @@
       
       <div class="d-flex align-items-center justify-content-between position-relative" style="z-index: 2;">
         <div class="d-flex gap-2">
-          <%= button_to "Likes (#{tweet.likes})", tweet_likes_path(tweet), disabled: !user_signed_in?, class: "btn btn-sm btn-outline-primary rounded-pill" %>
-          <%= button_to "Retweets (#{tweet.retweets})", tweet_retweets_path(tweet), disabled: !user_signed_in?, class: "btn btn-sm btn-outline-primary rounded-pill" %>
+          <%= button_to "Likes (#{tweet.likes})", tweet_likes_path(tweet), disabled: current_user_id.nil?, class: "btn btn-sm btn-outline-primary rounded-pill" %>
+          <%= button_to "Retweets (#{tweet.retweets})", tweet_retweets_path(tweet), disabled: current_user_id.nil?, class: "btn btn-sm btn-outline-primary rounded-pill" %>
         </div>
 
-        <%# SAFE CHECK: Use local_assigns only %>
-        <% auth_user = local_assigns[:current_user] || (defined?(current_user) ? current_user : nil) rescue nil %>
 
-        <% if auth_user && tweet.user_id == auth_user.id %>
+        <% if !current_user_id.nil? && tweet.user_id == current_user_id %>
           <div class="d-flex gap-2">
             <%= link_to "Edit", edit_tweet_path(tweet), class: "btn btn-sm btn-outline-secondary" %>
             <%= button_to "Delete", tweet, method: :delete, 

@@ -2,7 +2,7 @@
   <h1>Editing Tweet</h1>
   <%= turbo_frame_tag dom_id(@tweet) do %>
     <div class="card card-body p-3">
-      <%= render partial: "form", locals: { tweet: @tweet } %>      
+      <%= render partial: "form", locals: { tweet: @tweet, current_user_id: @current_user_id} %>      
       <%= link_to "Cancel", tweet_path(@tweet), class: "btn btn-sm btn-link" %>
     </div>
   <% end %>

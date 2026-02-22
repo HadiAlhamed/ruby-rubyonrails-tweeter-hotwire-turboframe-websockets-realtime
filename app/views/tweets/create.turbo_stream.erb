@@ -1,0 +1,8 @@
+<%= turbo_stream.prepend "tweets" do %>
+  <%= render partial: "tweets/tweet",
+             locals: { tweet: @tweet, current_user_id: current_user&.id } %>
+<% end %>
+<%= turbo_stream.replace "tweet_form" do %>
+  <%= render partial: "tweets/form",
+             locals: { tweet: Tweet.new, current_user_id: current_user&.id } %>
+<% end %>

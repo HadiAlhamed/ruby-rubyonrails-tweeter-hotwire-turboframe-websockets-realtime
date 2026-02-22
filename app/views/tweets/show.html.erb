@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(@tweet) do %>
-    <%= render "tweet", tweet: @tweet%>
+    <%= render "tweet", tweet: @tweet , current_user_id: @current_user_id%>
 <%end%>
 
 <h4>Comments</h4>
