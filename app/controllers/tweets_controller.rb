@@ -17,9 +17,20 @@ class TweetsController < ApplicationController
         format.html { redirect_to tweets_path, notice: "Tweet created!" }
       end
     else
+    # Re-fetch tweets so the index view has them if needed
+    @tweets = Tweet.includes(:user).all.order(created_at: :desc)
+
       respond_to do |format|
-        format.turbo_stream { render :index }
+        # This tells Turbo: "Forget the stream for a second,
+        # just render the HTML partial/page and I'll handle it"
         format.html { render :index, status: :unprocessable_entity }
+
+        # OR, the better Turbo way:
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace("tweet_form",
+                partial: "tweets/form",
+                 locals: { tweet: @tweet, current_user_id: current_user&.id })
+        }
       end
     end
   end
@@ -28,11 +39,17 @@ class TweetsController < ApplicationController
   def update
     respond_to do |format|
       if @tweet.update(tweet_params)
-        format.html { redirect_to tweets_path, notice: "Tweet updated!" }
         format.turbo_stream # Rails will use update.turbo_stream.erb
+        format.html { redirect_to tweets_path, notice: "Tweet updated!" }
       else
+        # When update fails, replace the specific tweet's edit form
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(dom_id(@tweet),
+                 partial: "tweets/form",
+                 locals: { tweet: @tweet, current_user_id: current_user&.id })
+        }
         format.html { render :edit, status: :unprocessable_entity }
-        format.turbo_stream { render :edit }
+
       end
     end
   end
