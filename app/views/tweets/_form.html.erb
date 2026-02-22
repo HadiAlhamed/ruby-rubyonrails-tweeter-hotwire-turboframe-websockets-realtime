@@ -1,4 +1,5 @@
-<%= form_with model: tweet , id: dom_id(tweet) do |form| %>
+<% form_id = tweet.new_record? ? "tweet_form" : dom_id(tweet) %>
+<%= form_with model: tweet , id: form_id do |form| %>
     <%= render partial: "shared/error_messages" , locals: {form: form} %>
     <div class = "mb-3">
         <%= form.label :body , class: "form-label"%>
