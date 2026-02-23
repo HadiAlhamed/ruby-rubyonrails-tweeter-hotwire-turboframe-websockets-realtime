@@ -8,9 +8,9 @@ class Comment < ApplicationRecord
     broadcast_append_to [ commentable, :comments ], target: "#{dom_id(commentable)}_comments"
   }
   after_update_commit -> {
-    broadcast_replace_to [ commentable, :comments ], target: "#{dom_id(commentable)}_comments"
+    broadcast_replace_to self
   }
-  after_destroy_commit -> {
-    broadcast_remove_to [ commentable, :comments ], target: "#{dom_id(commentable)}_comments"
-  }
+  after_destroy_commit do
+    broadcast_remove_to self
+  end
 end
