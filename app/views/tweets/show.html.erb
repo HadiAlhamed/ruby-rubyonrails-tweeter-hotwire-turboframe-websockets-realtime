@@ -13,5 +13,7 @@
 <%= turbo_stream_from @tweet , :comments %>
 
 <%= turbo_frame_tag "#{dom_id(@tweet)}_comments" do %>
-    <%= render @tweet.comments %>
+    <%= render partial: "comments/comment_with_replies", 
+    collection: @tweet.comments.where(parent_id: nil),
+    as: :comment %>
 <%end%>

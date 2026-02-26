@@ -1,0 +1,29 @@
+<%= turbo_stream_from comment, :comments %>
+
+<div class="border-start border-1 border-gray"
+     data-controller="comment-reply"
+     id="<%= dom_id(comment) %>_with_comments">
+
+    <%= render comment %>
+    
+    <div class="text-sm">
+        <%= link_to "Reply", "#", data: { action: "click->comment-reply#toggle" } %>
+    </div>
+
+    <%# MOVE THE INDENTATION HERE: Added 'ps-4' to the replies container %>
+    <div id="<%= dom_id(comment) %>_comments" class="ps-4 my-4">    
+        
+            <%= render partial: "comments/form", 
+                       locals: { 
+                         comment: Comment.new, 
+                         commentable: comment, 
+                         data: { comment_reply_target: "form" }, 
+                         class: "d-none" 
+                       } %>
+        
+
+        <%= render partial: "comments/comment_with_replies", 
+                   collection: comment.comments, 
+                   as: :comment %>
+    </div>
+</div>
