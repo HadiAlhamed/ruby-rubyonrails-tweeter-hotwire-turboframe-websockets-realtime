@@ -6,3 +6,8 @@
   <%= render partial: "tweets/form",
              locals: { tweet: Tweet.new, current_user_id: current_user&.id } %>
 <% end %>
+
+
+<%= turbo_stream.update "flash" do%>
+  <%= render partial: "shared/flash"%>
+<%end%>

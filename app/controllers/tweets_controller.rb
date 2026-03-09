@@ -12,6 +12,7 @@ class TweetsController < ApplicationController
     @tweet = current_user.tweets.build(tweet_params)
 
     if @tweet.save
+      flash.now[:notice] = "Tweet posted!"
       respond_to do |format|
         format.turbo_stream # Rails will automatically use create.turbo_stream.erb
         format.html { redirect_to tweets_path, notice: "Tweet created!" }

@@ -28,9 +28,14 @@
   </head>
 
   <body>
-    <%= render "layouts/navbar" %>  
+    <%= render "layouts/navbar" %>
+      <div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div id="flash" class="toast-container position-fixed end-0 p-3" style="top: 60px; z-index: 1080;">
+      <%= render "shared/flash" %>
+    </div>
+  </div>
       <div class = "container">
-        <%= render partial: "shared/flash" %>
+        <%# render partial: "shared/flash" %>
         <%= yield %>
     </div>
   </body>
